@@ -1,4 +1,4 @@
-import random
+import random, sys
 
 def generate_letter():
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z','a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -36,9 +36,9 @@ def password_check(password, len_password, n_symbol):
         symbol_check = False
 
     if length_check and symbol_check:
-        return "Password passed the check"
+        return "Password Check: Passed"
     else:
-        return "Password did not pass the check"
+        return "Password check: Fail"
     
 
 def generate_password(n_symbol: int, len_password: int):
@@ -58,12 +58,41 @@ def generate_password(n_symbol: int, len_password: int):
             password += str(number)
     return password
 
-password_symbols = int(input("How many symbols should be in your password: "))
-password_length = int(input("How long should your password be: "))
-user_password = generate_password(password_symbols, password_length)
-print(f"User generated password: {user_password}\t{password_check(user_password, password_length, password_symbols)}")
+def command_check():
+    try:
+        if len(sys.argv) == 2:
+            symbols = int(sys.argv[1])
+            assert symbols < 20, "Error: Number of symbols must be less than 20."
+
+        elif len(sys.argv) == 3:
+            symbols = int(sys.argv[1])
+            length = int(sys.argv[2])
+            assert symbols <= length, "Error: Number of symbols must be less than or equal to password length."
+
+        elif len(sys.argv) > 3:
+            print("Error: Too many arguments.\nUsage: <script.py> <Number of Symbols> <Password Length>")
+            return False
+
+        return True 
+
+    except (ValueError, TypeError):
+        print("Error: Command line arguments must be integers.")
+
+    except AssertionError as e:
+        print(e)
+    
 
 
+def main():
+    if command_check():
+        password_symbols = int(sys.argv[1]) if len(sys.argv) >= 2 else 3
+        password_length = int(sys.argv[2]) if len(sys.argv) >= 3 else 20
+        user_password = generate_password(password_symbols, password_length)
+        print(f"User generated password: {user_password}\n{password_check(user_password, password_length, password_symbols)}")
+
+
+if __name__ == "__main__":
+    main()
 
 
 
